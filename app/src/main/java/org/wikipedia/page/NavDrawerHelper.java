@@ -18,6 +18,7 @@ import org.wikipedia.R;
 import org.wikipedia.WikipediaApp;
 import org.wikipedia.analytics.LoginFunnel;
 import org.wikipedia.analytics.NavMenuFunnel;
+import org.wikipedia.gather.GatherActivity;
 import org.wikipedia.history.HistoryEntry;
 import org.wikipedia.history.HistoryFragment;
 import org.wikipedia.login.LoginActivity;
@@ -95,6 +96,9 @@ public class NavDrawerHelper {
                     case R.id.nav_item_random:
                         activity.getRandomHandler().doVisitRandomArticle();
                         funnel.logRandom();
+                        break;
+                    case R.id.nav_item_gather:
+                        launchGatherActivity();
                         break;
                     case R.id.nav_item_donate:
                         openDonatePage();
@@ -226,6 +230,11 @@ public class NavDrawerHelper {
         activity.closeNavDrawer();
         activity.startActivityForResult(new Intent().setClass(app, SettingsActivity.class),
                 SettingsActivity.ACTIVITY_REQUEST_SHOW_SETTINGS);
+    }
+
+    private void launchGatherActivity() {
+        activity.closeNavDrawer();
+        activity.startActivity(GatherActivity.newIntent(activity));
     }
 
     private void launchLoginActivity() {

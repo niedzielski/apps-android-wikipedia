@@ -33,6 +33,10 @@
         <attr name="cabEnabled" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="AutoFitRecyclerView">
+        <attr name="columnWidth" format="dimension" />
+    </declare-styleable>
+
     <declare-styleable name="EditTextAutoSummarizePreference">
         <attr name="editTextAutoSummarizePreferenceStyle" format="reference" />
         <attr name="autoSummarize" format="boolean" />

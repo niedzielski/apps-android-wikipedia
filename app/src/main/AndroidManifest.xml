@@ -131,6 +131,11 @@
                 <data android:pathPrefix="/android_asset/licenses/" android:scheme="file" />
             </intent-filter>
         </activity>
+        <activity android:name=".gather.GatherActivity"
+            android:label="@string/activity_gather_title"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
+            />
 
         <provider
                 android:authorities="${applicationId}.history"

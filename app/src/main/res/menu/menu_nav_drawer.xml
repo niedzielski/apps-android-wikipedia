@@ -27,6 +27,10 @@
             android:title="@string/nav_item_random"
             android:icon="@drawable/ic_dice"
             />
+        <item android:id="@+id/nav_item_gather"
+            android:title="@string/nav_item_gather"
+            android:icon="@drawable/recent"
+            />
     </group>
     <group android:id="@+id/group_user">
         <item android:id="@+id/nav_item_logout"
