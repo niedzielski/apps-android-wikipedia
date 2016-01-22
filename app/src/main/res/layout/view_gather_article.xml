@@ -3,13 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/view_gather_article_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null" />
+
     <TextView
         style="@style/TextAppearance.AppCompat.Large"
-        android:id="@+id/view_gather_collection_item_text"
+        android:id="@+id/view_gather_article_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
-
-    <!--  image -->
 
 </merge>

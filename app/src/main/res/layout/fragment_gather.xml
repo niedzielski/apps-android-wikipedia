@@ -15,7 +15,7 @@
         android:text="@string/activity_gather_title" />
 
     <org.wikipedia.gather.GatherCollectionView
-        android:id="@+id/gather"
+        android:id="@+id/fragment_gather_collections"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

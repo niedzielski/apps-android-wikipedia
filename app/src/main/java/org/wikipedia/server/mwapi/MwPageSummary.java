@@ -62,22 +62,11 @@ public class MwPageSummary implements PageSummary {
 
         @Expose @Nullable private String extract;
 
-        @Expose @Nullable private Thumb thumbnail;
+        @Expose @Nullable private Thumbnail thumbnail;
 
         @Nullable
         public String getThumbnailUrl() {
-            return thumbnail == null ? null : thumbnail.getUrl();
-        }
-    }
-
-    /**
-     * For the thumbnail URL of the page
-     */
-    public static class Thumb {
-        @Expose private String source;
-
-        public String getUrl() {
-            return source;
+            return thumbnail == null ? null : thumbnail.url();
         }
     }
 }

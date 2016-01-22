@@ -1,11 +1,20 @@
 package org.wikipedia.server;
 
+import android.support.annotation.NonNull;
+
+import org.wikipedia.Site;
+import org.wikipedia.gather.GatherCollection;
+
+import rx.Observable;
+
 /**
  * Generic interface for Page content service.
  * Usually we would use direct Retrofit Callbacks here but since we have two ways of
  * getting to the data (MW API and RESTBase) we add this layer of indirection -- until we drop one.
  */
 public interface PageService {
+    @NonNull Site getSite();
+
     /**
      * Gets a page summary for a given title -- for link previews
      *
@@ -41,4 +50,8 @@ public interface PageService {
      * @param cb a Retrofit callback which provides the populated PageCombo object in #success
      */
     void pageCombo(String title, boolean noImages, PageCombo.Callback cb);
+
+    @NonNull Observable<GatherCollection> requestGatherCollection(int id);
+
+    //@NonNull Observable<GatherCollections> requestGatherCollections();
 }

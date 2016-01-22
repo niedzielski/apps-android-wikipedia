@@ -44,6 +44,8 @@ import org.wikipedia.savedpages.SavedPage;
 import org.wikipedia.savedpages.SavedPagePersister;
 import org.wikipedia.search.RecentSearch;
 import org.wikipedia.search.RecentSearchPersister;
+import org.wikipedia.server.ContentServiceFactory;
+import org.wikipedia.server.PageService;
 import org.wikipedia.settings.Prefs;
 import org.wikipedia.theme.Theme;
 import org.wikipedia.util.ApiUtil;
@@ -101,6 +103,9 @@ public class WikipediaApp extends Application {
     private SharedPreferenceCookieManager cookieManager;
     private String userAgent;
     private Site primarySite;
+
+    @Nullable
+    private PageService appPageService;
 
     private CrashReporter crashReporter;
 
@@ -263,7 +268,7 @@ public class WikipediaApp extends Application {
     /**
      * Convenience method to get an API object for the primary site.
      *
-     * @return An API object that is equivalent to calling getAPIForSite(getPrimarySite)
+     * @return An API object that is equivalent to calling getAPIForSite(getAppSite)
      */
     public Api getPrimarySiteApi() {
         return getAPIForSite(getPrimarySite());
@@ -316,6 +321,13 @@ public class WikipediaApp extends Application {
     @Nullable
     public String getAppLanguageCanonicalName(String code) {
         return appLanguageState.getAppLanguageCanonicalName(code);
+    }
+
+    @NonNull public synchronized PageService getAppPageService() {
+        if (appPageService == null || appPageService.getSite().equals(getPrimarySite())) {
+            appPageService = ContentServiceFactory.create(getPrimarySite());
+        }
+        return appPageService;
     }
 
     public DBOpenHelper getDbOpenHelper() {

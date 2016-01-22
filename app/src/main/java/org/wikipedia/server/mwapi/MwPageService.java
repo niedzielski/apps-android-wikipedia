@@ -1,11 +1,16 @@
 package org.wikipedia.server.mwapi;
 
+import android.support.annotation.NonNull;
+
+import com.google.gson.annotations.SerializedName;
+
 import org.wikipedia.Site;
 import org.wikipedia.WikipediaApp;
+import org.wikipedia.gather.GatherCollection;
+import org.wikipedia.server.BasePageService;
 import org.wikipedia.server.PageCombo;
 import org.wikipedia.server.PageLead;
 import org.wikipedia.server.PageRemaining;
-import org.wikipedia.server.PageService;
 import org.wikipedia.server.PageSummary;
 import org.wikipedia.settings.RbSwitch;
 import org.wikipedia.zero.WikipediaZeroHandler;
@@ -15,15 +20,18 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Query;
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Retrofit web service client for MediaWiki PHP API.
  */
-public class MwPageService implements PageService {
+public class MwPageService extends BasePageService {
     private final MwPageEndpoints webService;
-    private WikipediaZeroHandler responseHeaderHandler;
+    private final WikipediaZeroHandler responseHeaderHandler;
 
-    public MwPageService(final Site site) {
+    public MwPageService(@NonNull Site site) {
+        super(site);
         responseHeaderHandler = WikipediaApp.getInstance().getWikipediaZeroHandler();
         webService = MwPageEndpointsCache.INSTANCE.getMwPageEndpoints(site);
     }
@@ -92,6 +100,17 @@ public class MwPageService implements PageService {
         });
     }
 
+    @NonNull
+    @Override
+    public Observable<GatherCollection> requestGatherCollection(int id) {
+        return webService.requestGatherCollection(id).map(new Func1<GatherResponse, GatherCollection>() {
+            @Override
+            public GatherCollection call(GatherResponse gatherResponse) {
+                return gatherResponse.query;
+            }
+        });
+    }
+
     /**
      * Optional boolean Retrofit parameter.
      * We don't want to send the query parameter at all when it's false since the presence of the
@@ -102,6 +121,17 @@ public class MwPageService implements PageService {
             return true;
         }
         return null;
+    }
+
+    private static class Continue {
+        String lspcontinue;
+        @SerializedName("continue") String continu;
+    }
+
+    private static class GatherResponse {
+        String batchcomplete;
+        @SerializedName("continue") Continue continu;
+        GatherCollection query;
     }
 
     /**
@@ -176,5 +206,11 @@ public class MwPageService implements PageService {
                 + "&noheadings=true")
         void pageCombo(@Query("page") String title, @Query("noimages") Boolean noImages,
                        Callback<MwPageCombo> cb);
+
+        // TODO: should I just return a GatherCollection? How to implement infinite scrolly polly?
+        //       Shouldn't we expose the limit? thumb size? what to do about sorting not working
+        //       with formatversion=2?
+        @GET("/w/api.php?action=query&format=json&formatversion=2&prop=pageimages&piprop=thumbnail&pithumbsize=400&pilimit=50&generator=listpages&glsplimit=50&lspsort=namespace")
+        Observable<GatherResponse> requestGatherCollection(@Query("glspid") int id);
     }
 }

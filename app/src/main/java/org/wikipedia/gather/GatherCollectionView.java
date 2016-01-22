@@ -14,8 +14,7 @@ import org.wikipedia.R;
 import org.wikipedia.views.AutoFitRecyclerView;
 import org.wikipedia.views.DefaultViewHolder;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,8 +22,6 @@ import butterknife.ButterKnife;
 public class GatherCollectionView extends FrameLayout {
     @Bind(R.id.view_gather_collection) AutoFitRecyclerView collectionView;
     private GridLayoutManager collectionViewLayoutManager;
-
-    @NonNull private final Collection<GatherCollectionItem> collection = new ArrayList<>();
 
     public GatherCollectionView(Context context) {
         super(context);
@@ -47,39 +44,48 @@ public class GatherCollectionView extends FrameLayout {
         init();
     }
 
+    public void setItems(@NonNull List<GatherArticle> items) {
+        // TODO: should this class be responsible for showing a "no items in collection" view?
+        collectionView.setAdapter(new CollectionViewAdapter(items));
+    }
+
+    public void notifyDataSetChanged() {
+        collectionView.getAdapter().notifyDataSetChanged();
+    }
+
     private void init() {
         inflate(getContext(), R.layout.view_gather_collection, this);
         ButterKnife.bind(this);
 
         initCollection();
-
-        for (int i = 0; i < 1000; ++i) {
-            collection.add(new GatherCollectionItem());
-        }
     }
 
     private void initCollection() {
         collectionViewLayoutManager = new GridLayoutManager(getContext(), collectionView.getColumns());
         collectionView.setLayoutManager(collectionViewLayoutManager);
         collectionView.setCallback(new CollectionViewColumnCallback());
-
-        collectionView.setAdapter(new CollectionViewAdapter());
     }
 
-    private class CollectionViewAdapter extends Adapter<DefaultViewHolder<GatherCollectionItemView>> {
-        @Override
-        public DefaultViewHolder<GatherCollectionItemView> onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new DefaultViewHolder<>(new GatherCollectionItemView(getContext()));
+    private class CollectionViewAdapter extends Adapter<DefaultViewHolder<GatherArticleView>> {
+        @NonNull private final List<GatherArticle> items;
+
+        CollectionViewAdapter(@NonNull List<GatherArticle> items) {
+            this.items = items;
         }
 
         @Override
-        public void onBindViewHolder(DefaultViewHolder<GatherCollectionItemView> holder, int position) {
-            holder.getView().update(position);
+        public DefaultViewHolder<GatherArticleView> onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new DefaultViewHolder<>(new GatherArticleView(getContext()));
+        }
+
+        @Override
+        public void onBindViewHolder(DefaultViewHolder<GatherArticleView> holder, int position) {
+            holder.getView().update(items.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return collection.size();
+            return items.size();
         }
     }
 

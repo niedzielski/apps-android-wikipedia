@@ -1,7 +1,11 @@
 package org.wikipedia.server.restbase;
 
+import android.support.annotation.NonNull;
+
 import org.wikipedia.Site;
 import org.wikipedia.WikipediaApp;
+import org.wikipedia.gather.GatherCollection;
+import org.wikipedia.server.BasePageService;
 import org.wikipedia.server.PageCombo;
 import org.wikipedia.server.PageLead;
 import org.wikipedia.server.PageRemaining;
@@ -16,15 +20,17 @@ import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import rx.Observable;
 
 /**
  * Retrofit web service client for RESTBase Nodejs API.
  */
-public class RbContentService implements PageService {
+public class RbContentService extends BasePageService {
     private final RbEndpoints webService;
-    private WikipediaZeroHandler responseHeaderHandler;
+    private final WikipediaZeroHandler responseHeaderHandler;
 
-    public RbContentService(final Site site) {
+    public RbContentService(Site site) {
+        super(site);
         responseHeaderHandler = WikipediaApp.getInstance().getWikipediaZeroHandler();
         webService = RbEndpointsCache.INSTANCE.getRbEndpoints(site);
     }
@@ -95,6 +101,13 @@ public class RbContentService implements PageService {
                 cb.failure(error);
             }
         });
+    }
+
+    @NonNull
+    @Override
+    public Observable<GatherCollection> requestGatherCollection(int id) {
+        // TODO: how to use MW implemenation here?
+        return null;
     }
 
     /* Not defined in the PageService interface since the Wiktionary definition endpoint exists only
